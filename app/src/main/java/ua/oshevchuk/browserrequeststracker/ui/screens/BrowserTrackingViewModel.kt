@@ -12,8 +12,6 @@ import ua.oshevchuk.browserrequeststracker.common.executeSafely
 import ua.oshevchuk.browserrequeststracker.domain.usecases.interfaces.AddRequestUseCase
 import ua.oshevchuk.browserrequeststracker.domain.usecases.interfaces.GetAllRequestsUseCase
 import ua.oshevchuk.browserrequeststracker.ui.enitites.BrowserRequestEntity
-import java.util.LinkedList
-import java.util.Queue
 import javax.inject.Inject
 
 @HiltViewModel
@@ -26,8 +24,7 @@ class BrowserTrackingViewModel @Inject constructor(
     private val _resultsState = MutableStateFlow<Response<List<BrowserRequestEntity>>?>(null)
     val resultsState = _resultsState.asStateFlow()
 
-
-    init{
+    fun getAllRequests(){
         viewModelScope.launch {
             executeSafely {
                 _resultsState.emit(Response.Loading())
