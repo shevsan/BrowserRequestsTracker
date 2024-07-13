@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">BrowserRequestsTracker</string>
+    <string name="url_has_been_copied">Selected url has been copied to clipboard!</string>
+    <string name="accessibility_service_description">This service tracks URLs accessed in the browser and saves those containing google.com to a local database.</string>
+</resources>
