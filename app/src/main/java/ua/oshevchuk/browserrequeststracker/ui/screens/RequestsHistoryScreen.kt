@@ -10,6 +10,7 @@ import android.provider.Settings
 import android.text.TextUtils
 import android.widget.Toast
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -28,6 +29,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -159,78 +161,87 @@ fun RequestsHistoryScreenContent(
 
     val isRefreshing = remember { mutableStateOf(false) }
     val swipeToRefreshState = rememberSwipeRefreshState(isRefreshing = isRefreshing.value)
-
-    SwipeRefresh(
-        state = swipeToRefreshState,
-        onRefresh = onRefresh
-    ) {
-        Box(modifier = modifier, contentAlignment = Alignment.Center) {
-            if (requests.value != null) {
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(start = 10.dp, end = 10.dp)
-                ) {
-                    items(requests.value ?: listOf(), key = { it.id ?: -1 }) { request ->
-                        AnimatedContent(
-                            targetState = request,
-                            transitionSpec = {
-                                fadeIn() togetherWith fadeOut() using SizeTransform(false)
-                            }, label = ""
-                        ) { targetRequest ->
-                            RequestItem(
-                                request = targetRequest,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(vertical = 5.dp)
-                                    .animateItemPlacement(tween(200)),
-                                onRemove = {
-                                    onRemoveRequest(targetRequest.id ?: -1)
-                                }
-                            )
+    Scaffold(modifier = Modifier.fillMaxSize()) { padding ->
+        SwipeRefresh(
+            state = swipeToRefreshState,
+            onRefresh = onRefresh,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+        ) {
+            Box(modifier = modifier, contentAlignment = Alignment.Center) {
+                if (requests.value != null) {
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(start = 10.dp, end = 10.dp)
+                    ) {
+                        items(requests.value ?: listOf(), key = { it.id ?: -1 }) { request ->
+                            AnimatedContent(
+                                targetState = request,
+                                transitionSpec = {
+                                    fadeIn() togetherWith fadeOut() using SizeTransform(false)
+                                }, label = ""
+                            ) { targetRequest ->
+                                RequestItem(
+                                    request = targetRequest,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(vertical = 5.dp)
+                                        .animateItemPlacement(tween(200)),
+                                    onRemove = {
+                                        onRemoveRequest(targetRequest.id ?: -1)
+                                    }
+                                )
+                            }
+                        }
+                        item {
+                            Spacer(modifier = Modifier.height(25.dp))
                         }
                     }
-                    item {
-                        Spacer(modifier = Modifier.height(25.dp))
-                    }
                 }
-            }
 
-            if (!isLoading.value && requests.value?.isEmpty() == true) {
-                Text(
-                    text = stringResource(id = R.string.empty_list),
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 32.sp,
-                    textAlign = TextAlign.Center
-                )
-            }
+                if (!isLoading.value && requests.value?.isEmpty() == true) {
+                    Text(
+                        text = stringResource(id = R.string.empty_list),
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 32.sp,
+                        textAlign = TextAlign.Center
+                    )
+                }
 
-            if (isLoading.value) {
-                CircularProgressIndicator(modifier = Modifier.size(50.dp), color = Color.Black)
+                if (isLoading.value) {
+                    CircularProgressIndicator(modifier = Modifier.size(50.dp), color = Color.Black)
+                }
             }
         }
-    }
-    ConstraintLayout(modifier = Modifier.fillMaxSize()) {
-        val fab = createRefs()
-        FloatingActionButton(
-            onClick = { if (removeRequestState !is Response.Loading) onClearAllClicked() },
-            shape = RoundedCornerShape(25.dp),
-            containerColor = RedFF,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp, vertical = 15.dp)
-                .constrainAs(fab.component1()) {
-                    bottom.linkTo(parent.bottom)
+        val isMoreThanOneItem =
+            (requests.value ?: listOf()).size > 1
+
+        AnimatedVisibility(visible = isMoreThanOneItem) {
+            ConstraintLayout(modifier = Modifier.fillMaxSize()) {
+                val fab = createRefs()
+                FloatingActionButton(
+                    onClick = { if (removeRequestState !is Response.Loading) onClearAllClicked() },
+                    shape = RoundedCornerShape(25.dp),
+                    containerColor = RedFF,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp, vertical = 55.dp)
+                        .constrainAs(fab.component1()) {
+                            bottom.linkTo(parent.bottom)
+                        }
+                ) {
+                    if (clearAllState is Response.Loading)
+                        DotLoader(modifier = Modifier.height(15.dp))
+                    else
+                        Text(
+                            text = stringResource(id = R.string.clear_history),
+                            color = Color.White,
+                            fontSize = 16.sp
+                        )
                 }
-        ) {
-            if (clearAllState is Response.Loading)
-                DotLoader(modifier = Modifier.height(15.dp))
-            else
-                Text(
-                    text = stringResource(id = R.string.clear_history),
-                    color = Color.White,
-                    fontSize = 16.sp
-                )
+            }
         }
     }
 }

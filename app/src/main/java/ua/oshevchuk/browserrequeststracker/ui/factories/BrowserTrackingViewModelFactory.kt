@@ -1,4 +1,4 @@
-package ua.oshevchuk.browserrequeststracker.ui.screens
+package ua.oshevchuk.browserrequeststracker.ui.factories
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -6,6 +6,7 @@ import ua.oshevchuk.browserrequeststracker.domain.usecases.interfaces.AddRequest
 import ua.oshevchuk.browserrequeststracker.domain.usecases.interfaces.ClearAllUseCase
 import ua.oshevchuk.browserrequeststracker.domain.usecases.interfaces.DeleteRequestUseCase
 import ua.oshevchuk.browserrequeststracker.domain.usecases.interfaces.GetAllRequestsUseCase
+import ua.oshevchuk.browserrequeststracker.ui.screens.BrowserTrackingViewModel
 import javax.inject.Inject
 import javax.inject.Provider
 import javax.inject.Singleton

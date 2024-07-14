@@ -17,7 +17,7 @@ import ua.oshevchuk.browserrequeststracker.domain.usecases.interfaces.AddRequest
 import ua.oshevchuk.browserrequeststracker.domain.usecases.interfaces.ClearAllUseCase
 import ua.oshevchuk.browserrequeststracker.domain.usecases.interfaces.DeleteRequestUseCase
 import ua.oshevchuk.browserrequeststracker.domain.usecases.interfaces.GetAllRequestsUseCase
-import ua.oshevchuk.browserrequeststracker.ui.screens.BrowserTrackingViewModelFactory
+import ua.oshevchuk.browserrequeststracker.ui.factories.BrowserTrackingViewModelFactory
 import javax.inject.Provider
 import javax.inject.Singleton
 

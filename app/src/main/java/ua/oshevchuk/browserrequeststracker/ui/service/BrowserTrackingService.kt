@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStore
 import dagger.hilt.android.AndroidEntryPoint
 import ua.oshevchuk.browserrequeststracker.ui.screens.BrowserTrackingViewModel
-import ua.oshevchuk.browserrequeststracker.ui.screens.BrowserTrackingViewModelFactory
+import ua.oshevchuk.browserrequeststracker.ui.factories.BrowserTrackingViewModelFactory
 import javax.inject.Inject
 
 @AndroidEntryPoint
