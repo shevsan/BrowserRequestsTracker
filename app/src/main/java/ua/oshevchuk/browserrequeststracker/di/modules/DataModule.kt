@@ -14,6 +14,8 @@ import ua.oshevchuk.browserrequeststracker.di.annotations.DefaultDispatcher
 import ua.oshevchuk.browserrequeststracker.di.annotations.IoDispatcher
 import ua.oshevchuk.browserrequeststracker.di.annotations.MainDispatcher
 import ua.oshevchuk.browserrequeststracker.domain.usecases.interfaces.AddRequestUseCase
+import ua.oshevchuk.browserrequeststracker.domain.usecases.interfaces.ClearAllUseCase
+import ua.oshevchuk.browserrequeststracker.domain.usecases.interfaces.DeleteRequestUseCase
 import ua.oshevchuk.browserrequeststracker.domain.usecases.interfaces.GetAllRequestsUseCase
 import ua.oshevchuk.browserrequeststracker.ui.screens.BrowserTrackingViewModelFactory
 import javax.inject.Provider
@@ -32,10 +34,15 @@ object DataModule {
     @Singleton
     fun provideBrowserTrackingViewModelFactory(
         addRequestUseCase: Provider<AddRequestUseCase>,
-        getAllRequestsUseCase: Provider<GetAllRequestsUseCase>
-    ): BrowserTrackingViewModelFactory {
-        return BrowserTrackingViewModelFactory(addRequestUseCase, getAllRequestsUseCase)
-    }
+        getAllRequestsUseCase: Provider<GetAllRequestsUseCase>,
+        deleteRequestUseCase: Provider<DeleteRequestUseCase>,
+        clearAllUseCase: Provider<ClearAllUseCase>
+    ) = BrowserTrackingViewModelFactory(
+        addRequestUseCase,
+        getAllRequestsUseCase,
+        deleteRequestUseCase,
+        clearAllUseCase
+    )
 
 
     @Provides

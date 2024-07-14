@@ -6,28 +6,41 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ua.oshevchuk.browserrequeststracker.common.Response
 import ua.oshevchuk.browserrequeststracker.common.executeSafely
 import ua.oshevchuk.browserrequeststracker.domain.usecases.interfaces.AddRequestUseCase
+import ua.oshevchuk.browserrequeststracker.domain.usecases.interfaces.ClearAllUseCase
+import ua.oshevchuk.browserrequeststracker.domain.usecases.interfaces.DeleteRequestUseCase
 import ua.oshevchuk.browserrequeststracker.domain.usecases.interfaces.GetAllRequestsUseCase
 import ua.oshevchuk.browserrequeststracker.ui.enitites.BrowserRequestEntity
-import java.util.LinkedList
-import java.util.Queue
 import javax.inject.Inject
 
 @HiltViewModel
 class BrowserTrackingViewModel @Inject constructor(
     private val addRequestUseCase: AddRequestUseCase,
-    private val getAllRequestsUseCase: GetAllRequestsUseCase
-): ViewModel() {
+    private val getAllRequestsUseCase: GetAllRequestsUseCase,
+    private val deleteRequestUseCase: DeleteRequestUseCase,
+    private val clearAllUseCase: ClearAllUseCase
+) : ViewModel() {
 
+
+    private val _clearAllState = MutableStateFlow<Response<Unit>?>(null)
+    val clearAllState = _clearAllState.asStateFlow()
+
+    private val _removeRequestState = MutableStateFlow<Response<Unit>?>(null)
+    val removeRequestState = _removeRequestState.asStateFlow()
 
     private val _resultsState = MutableStateFlow<Response<List<BrowserRequestEntity>>?>(null)
     val resultsState = _resultsState.asStateFlow()
 
+    init {
+        getAllRequests()
+    }
 
-    init{
+
+    fun getAllRequests() {
         viewModelScope.launch {
             executeSafely {
                 _resultsState.emit(Response.Loading())
@@ -40,6 +53,44 @@ class BrowserTrackingViewModel @Inject constructor(
         }
     }
 
+    fun removeRequest(requestId: Int) {
+        viewModelScope.launch {
+            executeSafely {
+                _removeRequestState.emit(Response.Loading())
+                deleteRequestUseCase(requestId)
+            }.onSuccess {
+                _removeRequestState.emit(Response.Success(Unit))
+                _resultsState.update { currentState ->
+                    currentState?.let { response ->
+                        if (response is Response.Success) {
+                            val updatedList = response.data.filter { it.id != requestId }
+                            Response.Success(updatedList)
+                        } else {
+                            response
+                        }
+                    }
+                }
+            }.onFailure {
+                _removeRequestState.emit(Response.Error(it.message ?: "error"))
+            }
+        }
+    }
+
+
+    fun clearAllRequests() {
+        viewModelScope.launch {
+            executeSafely {
+                _clearAllState.emit(Response.Loading())
+                clearAllUseCase()
+            }.onSuccess {
+                _clearAllState.emit(Response.Success(Unit))
+                getAllRequests()
+            }.onFailure {
+                _clearAllState.emit(Response.Error(it.message ?: "error"))
+            }
+        }
+    }
+
 
     fun extractUrl(nodeInfo: AccessibilityNodeInfo?): String? {
         if (nodeInfo == null) return null
@@ -48,7 +99,7 @@ class BrowserTrackingViewModel @Inject constructor(
         while (currentNode != null) {
             if (currentNode.className == "android.webkit.WebView" || currentNode.className == "android.widget.EditText") {
                 val url = currentNode.text?.toString()
-                if (url != null ) {
+                if (url != null) {
                     return url
                 }
             }

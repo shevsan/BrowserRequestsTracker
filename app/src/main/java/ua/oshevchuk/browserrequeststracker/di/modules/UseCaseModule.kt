@@ -6,9 +6,11 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import ua.oshevchuk.browserrequeststracker.domain.usecases.implementations.AddRequestUseCaseImpl
 import ua.oshevchuk.browserrequeststracker.domain.usecases.implementations.ClearAllUseCaseImpl
+import ua.oshevchuk.browserrequeststracker.domain.usecases.implementations.DeleteRequestUseCaseImpl
 import ua.oshevchuk.browserrequeststracker.domain.usecases.implementations.GetAllRequestsUseCaseImpl
 import ua.oshevchuk.browserrequeststracker.domain.usecases.interfaces.AddRequestUseCase
 import ua.oshevchuk.browserrequeststracker.domain.usecases.interfaces.ClearAllUseCase
+import ua.oshevchuk.browserrequeststracker.domain.usecases.interfaces.DeleteRequestUseCase
 import ua.oshevchuk.browserrequeststracker.domain.usecases.interfaces.GetAllRequestsUseCase
 
 @Module
@@ -22,4 +24,7 @@ abstract class UseCaseModule {
 
     @Binds
     abstract fun bindGetAllRequestsUseCase(getAllRequestsUseCaseImpl: GetAllRequestsUseCaseImpl): GetAllRequestsUseCase
+
+    @Binds
+    abstract fun bindDeleteRequestUseCase(deleteRequestUseCaseImpl: DeleteRequestUseCaseImpl): DeleteRequestUseCase
 }

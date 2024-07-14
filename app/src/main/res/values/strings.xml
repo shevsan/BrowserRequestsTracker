@@ -1,5 +1,8 @@
 <resources>
     <string name="app_name">BrowserRequestsTracker</string>
+    <string name="empty_list">There is empty… Let\'s change it! =)</string>
     <string name="url_has_been_copied">Selected url has been copied to clipboard!</string>
     <string name="accessibility_service_description">This service tracks URLs accessed in the browser and saves those containing google.com to a local database.</string>
+    <string name="request_has_been_deleted">Selected request has been successfully deleted!</string>
+    <string name="clear_history">Clear all the requests</string>
 </resources>
