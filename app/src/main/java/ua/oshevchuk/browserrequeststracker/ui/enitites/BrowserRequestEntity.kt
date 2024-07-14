@@ -25,13 +25,21 @@ data class BrowserRequestEntity(
 
 
     fun extractQuery(): String? {
-        try {
+        return try {
             val decodedUrl = java.net.URLDecoder.decode(url, "UTF-8")
 
             val queryStartIndex = decodedUrl.indexOf("?q=")
+            val altQueryStartIndex = decodedUrl.indexOf("&q=")
 
-            if (queryStartIndex != -1) {
-                val startIndex = queryStartIndex + 3
+            val startIndex = if (queryStartIndex != -1) {
+                queryStartIndex + 3
+            } else if (altQueryStartIndex != -1) {
+                altQueryStartIndex + 3
+            } else {
+                -1
+            }
+
+            if (startIndex != -1) {
                 val endIndex = decodedUrl.indexOf('&', startIndex)
 
                 val query = if (endIndex != -1) {
@@ -40,13 +48,16 @@ data class BrowserRequestEntity(
                     decodedUrl.substring(startIndex)
                 }
 
-                return query.replace("+", " ")
+                query.replace("+", " ")
+            } else {
+                null
             }
         } catch (e: Exception) {
             e.printStackTrace()
+            null
         }
-        return null
     }
+
 
     companion object {
         fun generateFakeItem() =
