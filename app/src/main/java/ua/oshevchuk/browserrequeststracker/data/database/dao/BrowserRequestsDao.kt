@@ -15,4 +15,7 @@ interface BrowserRequestsDao {
 
     @Query("DELETE FROM browser_requests")
     suspend fun clearAll()
+
+    @Query("DELETE FROM browser_requests WHERE id = :requestId")
+    suspend fun deleteRequestById(requestId: Int)
 }

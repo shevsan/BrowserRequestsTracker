@@ -16,9 +16,9 @@ class BrowserTrackingRepositoryImpl @Inject constructor(
     @IoDispatcher val ioDispatcher: CoroutineDispatcher,
     private val dao: BrowserRequestsDao
 ) : BrowserTrackingRepository {
-    override suspend fun insertRequest(requst: BrowserRequestEntity) {
+    override suspend fun insertRequest(request: BrowserRequestEntity) {
         withContext(ioDispatcher) {
-            dao.insertRequest(requst.toDO())
+            dao.insertRequest(request.toDO())
         }
     }
 
@@ -30,5 +30,11 @@ class BrowserTrackingRepositoryImpl @Inject constructor(
 
     override suspend fun getAllRequests(): List<BrowserRequestEntity> = withContext(ioDispatcher) {
         dao.getAllBrowserRequests().map { it.toEntity() }.reversed()
+    }
+
+    override suspend fun deleteRequest(id: Int) {
+        withContext(ioDispatcher){
+            dao.deleteRequestById(id)
+        }
     }
 }

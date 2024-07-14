@@ -6,7 +6,6 @@ import android.view.accessibility.AccessibilityEvent
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStore
 import dagger.hilt.android.AndroidEntryPoint
-import ua.oshevchuk.browserrequeststracker.App
 import ua.oshevchuk.browserrequeststracker.ui.screens.BrowserTrackingViewModel
 import ua.oshevchuk.browserrequeststracker.ui.screens.BrowserTrackingViewModelFactory
 import javax.inject.Inject
@@ -20,7 +19,7 @@ class BrowserTrackingService : AccessibilityService() {
 
     override fun onCreate() {
         super.onCreate()
-        viewModel = ViewModelProvider(store = ViewModelStore(), factory = viewModelFactory).get(BrowserTrackingViewModel::class.java)
+        viewModel = ViewModelProvider(store = ViewModelStore(), factory = viewModelFactory)[BrowserTrackingViewModel::class.java]
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {

@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 
 data class BrowserRequestEntity(
+    val id: Int? = null,
     val url: String,
     val timestamp: Long
 ) {
@@ -26,14 +27,19 @@ data class BrowserRequestEntity(
     fun extractQuery(): String? {
         try {
             val decodedUrl = java.net.URLDecoder.decode(url, "UTF-8")
+
             val queryStartIndex = decodedUrl.indexOf("?q=")
+
             if (queryStartIndex != -1) {
-                val queryEndIndex = decodedUrl.indexOf('&', queryStartIndex)
-                val query = if (queryEndIndex != -1) {
-                    decodedUrl.substring(queryStartIndex + 3, queryEndIndex)
+                val startIndex = queryStartIndex + 3
+                val endIndex = decodedUrl.indexOf('&', startIndex)
+
+                val query = if (endIndex != -1) {
+                    decodedUrl.substring(startIndex, endIndex)
                 } else {
-                    decodedUrl.substring(queryStartIndex + 3)
+                    decodedUrl.substring(startIndex)
                 }
+
                 return query.replace("+", " ")
             }
         } catch (e: Exception) {
@@ -42,11 +48,11 @@ data class BrowserRequestEntity(
         return null
     }
 
-    companion object{
+    companion object {
         fun generateFakeItem() =
             BrowserRequestEntity(
-                "https://www.google.com/search?q=android&oq=android+&gs_lcrp=EgZjaHJvbWUyBggAEEUYOTIHCAEQABiABDIHCAIQABiABDIHCAMQABiABDIGCAQQRRg7MgcIBRAAGIAEMgcIBhAAGIAEMgcIBxAAGIAEMgcICBAAGIAEMgcICRAAGIAE0gEJNDIzMGowajE1qAIIsAIB&sourceid=chrome&ie=UTF-8",
-                1720892673000
+                url = "https://www.google.com/search?q=android&oq=android+&gs_lcrp=EgZjaHJvbWUyBggAEEUYOTIHCAEQABiABDIHCAIQABiABDIHCAMQABiABDIGCAQQRRg7MgcIBRAAGIAEMgcIBhAAGIAEMgcIBxAAGIAEMgcICBAAGIAEMgcICRAAGIAE0gEJNDIzMGowajE1qAIIsAIB&sourceid=chrome&ie=UTF-8",
+                timestamp = 1720892673000
             )
     }
 }

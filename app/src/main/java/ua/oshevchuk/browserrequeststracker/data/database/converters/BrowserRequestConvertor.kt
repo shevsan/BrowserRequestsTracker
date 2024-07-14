@@ -10,5 +10,6 @@ fun BrowserRequestEntity.toDO() = BrowserRequestDO(
 
 fun BrowserRequestDO.toEntity() = BrowserRequestEntity(
     url = this.url ?: "",
-    timestamp = this.timestamp ?: 0L
+    timestamp = this.timestamp ?: 0L,
+    id = this.id
 )
