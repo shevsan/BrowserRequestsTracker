@@ -13,12 +13,6 @@ import ua.oshevchuk.browserrequeststracker.data.database.AppDatabase
 import ua.oshevchuk.browserrequeststracker.di.annotations.DefaultDispatcher
 import ua.oshevchuk.browserrequeststracker.di.annotations.IoDispatcher
 import ua.oshevchuk.browserrequeststracker.di.annotations.MainDispatcher
-import ua.oshevchuk.browserrequeststracker.domain.usecases.interfaces.AddRequestUseCase
-import ua.oshevchuk.browserrequeststracker.domain.usecases.interfaces.ClearAllUseCase
-import ua.oshevchuk.browserrequeststracker.domain.usecases.interfaces.DeleteRequestUseCase
-import ua.oshevchuk.browserrequeststracker.domain.usecases.interfaces.GetAllRequestsUseCase
-import ua.oshevchuk.browserrequeststracker.ui.factories.BrowserTrackingViewModelFactory
-import javax.inject.Provider
 import javax.inject.Singleton
 
 @Module
@@ -29,21 +23,6 @@ object DataModule {
     fun provideDatabase(@ApplicationContext context: Context) = Room.databaseBuilder(
         context, AppDatabase::class.java, "browser_requests"
     ).build()
-
-    @Provides
-    @Singleton
-    fun provideBrowserTrackingViewModelFactory(
-        addRequestUseCase: Provider<AddRequestUseCase>,
-        getAllRequestsUseCase: Provider<GetAllRequestsUseCase>,
-        deleteRequestUseCase: Provider<DeleteRequestUseCase>,
-        clearAllUseCase: Provider<ClearAllUseCase>
-    ) = BrowserTrackingViewModelFactory(
-        addRequestUseCase,
-        getAllRequestsUseCase,
-        deleteRequestUseCase,
-        clearAllUseCase
-    )
-
 
     @Provides
     @DefaultDispatcher

@@ -5,4 +5,5 @@
     <string name="accessibility_service_description">This service tracks URLs accessed in the browser and saves those containing google.com to a local database.</string>
     <string name="request_has_been_deleted">Selected request has been successfully deleted!</string>
     <string name="clear_history">Clear all the requests</string>
+    <string name="click_to_google">Go googling!</string>
 </resources>

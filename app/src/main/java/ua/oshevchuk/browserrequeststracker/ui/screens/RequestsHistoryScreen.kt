@@ -5,6 +5,7 @@ package ua.oshevchuk.browserrequeststracker.ui.screens
 import android.accessibilityservice.AccessibilityService
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.text.TextUtils
@@ -18,6 +19,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -27,6 +29,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Scaffold
@@ -202,12 +206,23 @@ fun RequestsHistoryScreenContent(
                 }
 
                 if (!isLoading.value && requests.value?.isEmpty() == true) {
-                    Text(
-                        text = stringResource(id = R.string.empty_list),
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 32.sp,
-                        textAlign = TextAlign.Center
-                    )
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(
+                            text = stringResource(id = R.string.empty_list),
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 32.sp,
+                            textAlign = TextAlign.Center
+                        )
+                        Spacer(modifier = Modifier.height(30.dp))
+                        Button(onClick = { openChrome(context) }, shape = RoundedCornerShape(10.dp), colors = ButtonDefaults.buttonColors(containerColor = Color.DarkGray)) {
+                            Text(
+                                text = stringResource(id = R.string.click_to_google),
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 22.sp,
+                                textAlign = TextAlign.Center,
+                            )
+                        }
+                    }
                 }
 
                 if (isLoading.value) {
@@ -246,6 +261,20 @@ fun RequestsHistoryScreenContent(
     }
 }
 
+
+fun openChrome(context: Context) {
+    val url = "https://www.google.com/"
+    try {
+        val uri = Uri.parse(url)
+        val intent = Intent(Intent.ACTION_VIEW, uri)
+        intent.setPackage("com.android.chrome")
+        context.startActivity(intent)
+    } catch (e: Exception) {
+        e.printStackTrace()
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        context.startActivity(intent)
+    }
+}
 
 fun showToast(text: String, context: Context) {
     Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
